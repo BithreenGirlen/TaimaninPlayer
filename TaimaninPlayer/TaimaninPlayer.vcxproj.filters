@@ -24,9 +24,6 @@
     <ClInclude Include="d2_text_writer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="framework.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="main_window.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
