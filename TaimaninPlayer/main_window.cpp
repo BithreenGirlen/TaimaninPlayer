@@ -610,7 +610,7 @@ bool CMainWindow::SetupScenario(const wchar_t* pwzFilePath)
                     const auto& iter = m_imageMap.find(layerFile.wstrFilePath);
                     if (iter == m_imageMap.cend())
                     {
-                        ImageInfo s{};
+                        SImageFrame s{};
                         bool bRet = win_image::LoadImageToMemory(layerFile.wstrFilePath.c_str(), &s, 1.f);
                         if (bRet)
                         {
@@ -634,9 +634,9 @@ bool CMainWindow::SetupScenario(const wchar_t* pwzFilePath)
                 const auto& iterParent = m_imageMap.find(layerFiles.at(0).wstrFilePath);
                 if (iterParent == m_imageMap.cend())return;
 
-                std::vector<ImageInfo*> layer;
-                ImageInfo* const pImageInfoParent = &iterParent->second;
-                layer.emplace_back(pImageInfoParent);
+                std::vector<SImageFrame*> layer;
+                SImageFrame* const pImageFrameParent = &iterParent->second;
+                layer.emplace_back(pImageFrameParent);
 
                 /*後景切り替わり時、後景のみの差分を作成*/
                 if (wstrLastParent.empty() || layerFiles.at(0).wstrFilePath.find(wstrLastParent) == std::string::npos)
@@ -650,8 +650,8 @@ bool CMainWindow::SetupScenario(const wchar_t* pwzFilePath)
                     const auto& iterChild = m_imageMap.find(layerFiles.at(i).wstrFilePath);
                     if (iterChild == m_imageMap.cend())continue;
 
-                    ImageInfo* const pImageInfoChild = &iterChild->second;
-                    layer.emplace_back(pImageInfoChild);
+                    SImageFrame* const pImageFrameChild = &iterChild->second;
+                    layer.emplace_back(pImageFrameChild);
                 }
                 m_layers.push_back(layer);
             }

@@ -96,8 +96,8 @@ private:
 	std::vector<adv::TextDatum> m_textData;
 	size_t m_nTextIndex = 0;
 
-	std::unordered_map<std::wstring, ImageInfo> m_imageMap;
-	std::vector<std::vector<ImageInfo*>> m_layers;
+	std::unordered_map<std::wstring, SImageFrame> m_imageMap;
+	std::vector<std::vector<SImageFrame*>> m_layers;
 	size_t m_nLayerIndex = 0;
 
 	void ShiftPaintData(bool bForward);

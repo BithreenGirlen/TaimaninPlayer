@@ -27,9 +27,6 @@
     <ClInclude Include="framework.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="image_info.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="main_window.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
