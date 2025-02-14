@@ -135,6 +135,7 @@
     <ClInclude Include="media_setting_dialogue.h" />
     <ClInclude Include="mf_media_player.h" />
     <ClInclude Include="taimanin.h" />
+    <ClInclude Include="taimanin_scene_crafter.h" />
     <ClInclude Include="text_utility.h" />
     <ClInclude Include="view_manager.h" />
     <ClInclude Include="win_dialogue.h" />
@@ -151,7 +152,7 @@
     <ClCompile Include="media_setting_dialogue.cpp" />
     <ClCompile Include="mf_media_player.cpp" />
     <ClCompile Include="taimanin.cpp" />
-    <ClCompile Include="text_utility.cpp" />
+    <ClCompile Include="taimanin_scene_crafter.cpp" />
     <ClCompile Include="view_manager.cpp" />
     <ClCompile Include="win_dialogue.cpp" />
     <ClCompile Include="win_filesystem.cpp" />

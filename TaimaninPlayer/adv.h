@@ -11,10 +11,10 @@ namespace adv
 		std::wstring wstrVoicePath;
 	};
 
-	struct ImageFileDatum
+	struct SceneDatum
 	{
-		int iLayer = 0;
-		std::wstring wstrFilePath;
+		size_t nTextIndex = 0;
+		size_t nImageIndex = 0;
 	};
 }
 

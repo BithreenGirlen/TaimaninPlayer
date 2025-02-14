@@ -5,21 +5,22 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
 
 #include "d2_image_drawer.h"
 #include "d2_text_writer.h"
 #include "mf_media_player.h"
 #include "view_manager.h"
-#include "adv.h"
+#include "taimanin_scene_crafter.h"
 
 class CMainWindow
 {
 public:
 	CMainWindow();
 	~CMainWindow();
+
 	bool Create(HINSTANCE hInstance);
 	int MessageLoop();
+
 	HWND GetHwnd()const { return m_hWnd;}
 private:
 	const wchar_t* m_swzClassName = L"Taimanin player window";
@@ -84,7 +85,6 @@ private:
 	void SwitchWindowMode();
 
 	bool SetupScenario(const wchar_t* pwzFolderPath);
-	void ClearScenarioInfo();
 
 	void UpdateScreen();
 
@@ -92,20 +92,11 @@ private:
 	CD2TextWriter* m_pD2TextWriter = nullptr;
 	CMfMediaPlayer* m_pAudioPlayer = nullptr;
 	CViewManager* m_pViewManager = nullptr;
+	CTaimaninSceneCrafter* m_pTaimaninSceneCrafter = nullptr;
 
-	std::vector<adv::TextDatum> m_textData;
-	size_t m_nTextIndex = 0;
-
-	std::unordered_map<std::wstring, SImageFrame> m_imageMap;
-	std::vector<std::vector<SImageFrame*>> m_layers;
-	size_t m_nLayerIndex = 0;
-
-	void ShiftPaintData(bool bForward);
-	void UpdatePaintData();
 	void ShiftText(bool bForward);
 	void UpdateText();
 	void AutoTexting();
-	std::wstring FormatCurrentText();
 
 	void OnAudioPlayerEvent(unsigned long ulEvent);
 };
