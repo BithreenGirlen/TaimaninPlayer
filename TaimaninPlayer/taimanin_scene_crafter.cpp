@@ -109,7 +109,7 @@ std::vector<ID2D1Bitmap*> CTaimaninSceneCrafter::GetCurrentImages()
 	return std::vector<ID2D1Bitmap*>();
 }
 /*文章生成*/
-std::wstring CTaimaninSceneCrafter::GetCurrentText()
+std::wstring CTaimaninSceneCrafter::GetCurrentFormattedText()
 {
 	std::wstring wstr;
 	if (m_nSceneIndex < m_sceneData.size())
@@ -128,18 +128,18 @@ std::wstring CTaimaninSceneCrafter::GetCurrentText()
 	return wstr;
 }
 /*現在の音声ファイル経路受け渡し*/
-std::wstring CTaimaninSceneCrafter::GetCurrentVoiceFilePath()
+const wchar_t* CTaimaninSceneCrafter::GetCurrentVoiceFilePath()
 {
 	if (m_nSceneIndex < m_sceneData.size())
 	{
 		size_t nTextIndex = m_sceneData[m_nSceneIndex].nTextIndex;
 		if (nTextIndex < m_textData.size())
 		{
-			return m_textData[nTextIndex].wstrVoicePath;
+			return m_textData[nTextIndex].wstrVoicePath.c_str();
 		}
 	}
 
-	return std::wstring();
+	return nullptr;
 }
 /*消去*/
 void CTaimaninSceneCrafter::ClearScenarioData()

@@ -250,7 +250,7 @@ LRESULT CMainWindow::OnPaint()
 
 		if (!m_bTextHidden)
 		{
-			std::wstring wstr = m_pTaimaninSceneCrafter->GetCurrentText();
+			std::wstring wstr = m_pTaimaninSceneCrafter->GetCurrentFormattedText();
 			constexpr float kfOffsetX = 170.f;
 
 			m_pD2TextWriter->OutLinedDraw(wstr.c_str(), static_cast<unsigned long>(wstr.size()), { kfOffsetX * m_pViewManager->GetScale() });
@@ -660,14 +660,15 @@ void CMainWindow::UpdateText()
 {
 	if (m_pTaimaninSceneCrafter != nullptr)
 	{
-		std::wstring wstrVoiceFilePath = m_pTaimaninSceneCrafter->GetCurrentVoiceFilePath();
-		if (!wstrVoiceFilePath.empty())
+		if (m_pAudioPlayer != nullptr)
 		{
-			if (m_pAudioPlayer != nullptr)
+			const wchar_t* pwzVoiceFilePath = m_pTaimaninSceneCrafter->GetCurrentVoiceFilePath();
+			if (pwzVoiceFilePath != nullptr && *pwzVoiceFilePath != L'\0')
 			{
-				m_pAudioPlayer->Play(wstrVoiceFilePath.c_str());
+				m_pAudioPlayer->Play(pwzVoiceFilePath);
 			}
 		}
+
 		constexpr unsigned int kTimerInterval = 2000;
 		::SetTimer(m_hWnd, Timer::kText, kTimerInterval, nullptr);
 

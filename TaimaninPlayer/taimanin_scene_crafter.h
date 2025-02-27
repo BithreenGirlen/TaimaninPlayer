@@ -24,8 +24,8 @@ public:
 	bool HasReachedLastScene();
 
 	std::vector<ID2D1Bitmap*> GetCurrentImages();
-	std::wstring GetCurrentText();
-	std::wstring GetCurrentVoiceFilePath();
+	std::wstring GetCurrentFormattedText();
+	const wchar_t* GetCurrentVoiceFilePath();
 private:
 	ID2D1DeviceContext* m_pStoredD2d1DeviceContext = nullptr;
 
