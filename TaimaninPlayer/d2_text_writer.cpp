@@ -90,38 +90,55 @@ void CD2TextWriter::OutLinedDraw(const wchar_t* wszText, unsigned long ulTextLen
 
 	/*他の描画法と違って制御コードも文字列として見てしまうので一行毎に描画する。*/
 	const auto TextToLines = 
-		[&wszText, &ulTextLength](std::vector<std::vector<wchar_t>>& lines)
+		[&wszText, &ulTextLength](std::vector<std::vector<wchar_t>>& lines, size_t nMax = SIZE_MAX)
 		-> void
 		{
-			std::vector<wchar_t> wchars;
+			const wchar_t* pLineStart = nullptr;
 			for (size_t i = 0; i < ulTextLength; ++i)
 			{
-				if (wszText[i] == '\r' || wszText[i] == '\n')
+				if (wszText[i] == L'\r' || wszText[i] == L'\n')
 				{
-					if (!wchars.empty())
+					if (pLineStart != nullptr)
 					{
-						lines.push_back(wchars);
-						wchars.clear();
+						lines.emplace_back(pLineStart, &wszText[i]);
+						pLineStart = nullptr;
 					}
-					continue;
 				}
-				wchars.push_back(wszText[i]);
+				else
+				{
+					if (pLineStart == nullptr)
+					{
+						pLineStart = &wszText[i];
+					}
+					else
+					{
+						size_t nLen = &wszText[i] - pLineStart;
+						if (nLen >= nMax)
+						{
+							lines.emplace_back(pLineStart, &wszText[i]);
+							pLineStart = &wszText[i];
+						}
+					}
+				}
 			}
 
-			if (!wchars.empty())
+			if (pLineStart != nullptr)
 			{
-				lines.push_back(wchars);
+				lines.emplace_back(pLineStart, &wszText[ulTextLength]);
 			}
 		};
 
+	D2D1_SIZE_F fSize = m_pStoredD2d1DeviceContext->GetSize();
+	size_t nMax = static_cast<size_t>((fSize.width - (rect.left - rect.right)) / PointSizeToDip(m_fFontSize)) - 2LL;
+
 	std::vector<std::vector<wchar_t>> lines;
-	TextToLines(lines);
+	TextToLines(lines, nMax);
 
 	m_pStoredD2d1DeviceContext->BeginDraw();
 	for (size_t i = 0; i < lines.size(); ++i)
 	{
 		D2D1_POINT_2F fPos{ rect.left, rect.top + i * PointSizeToDip(m_fFontSize) };
-		SingleLineGlyphDraw(lines.at(i).data(), static_cast<unsigned long>(lines.at(i).size()), fPos);
+		SingleLineGlyphDraw(lines[i].data(), static_cast<unsigned long>(lines[i].size()), fPos);
 	}
 	m_pStoredD2d1DeviceContext->EndDraw();
 }
@@ -188,10 +205,10 @@ bool CD2TextWriter::CreateBrushes()
 bool CD2TextWriter::SingleLineGlyphDraw(const wchar_t* wszText, unsigned long ulTextLength, const D2D1_POINT_2F& fRawPos)
 {
 	std::vector<UINT32> codePoints;
-	codePoints.reserve(ulTextLength);
+	codePoints.resize(ulTextLength);
 	for (unsigned long i = 0; i < ulTextLength; ++i)
 	{
-		codePoints.push_back(wszText[i]);
+		codePoints[i] = wszText[i];
 	}
 
 	std::vector<UINT16> glyphai;
@@ -218,9 +235,11 @@ bool CD2TextWriter::SingleLineGlyphDraw(const wchar_t* wszText, unsigned long ul
 	D2D1_RECT_F fGeoRect{};
 	pD2d1PathGeometry->GetBounds(nullptr, &fGeoRect);
 	D2D1_POINT_2F fPos = { fRawPos.x - fGeoRect.left, fRawPos.y - fGeoRect.top };
+
 	m_pStoredD2d1DeviceContext->SetTransform(D2D1::Matrix3x2F::Translation(fPos.x, fPos.y));
 	m_pStoredD2d1DeviceContext->DrawGeometry(pD2d1PathGeometry, m_bColourReversed ? m_pD2d1SolidColorBrush :m_pD2dSolidColorBrushForOutline, PointSizeToDip(m_fStrokeWidth));
 	m_pStoredD2d1DeviceContext->FillGeometry(pD2d1PathGeometry, m_bColourReversed ? m_pD2dSolidColorBrushForOutline : m_pD2d1SolidColorBrush);
 	m_pStoredD2d1DeviceContext->SetTransform(D2D1::Matrix3x2F::Translation(0.f, 0.f));
+
 	return true;
 }
