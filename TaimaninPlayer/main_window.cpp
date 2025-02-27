@@ -49,7 +49,7 @@ bool CMainWindow::Create(HINSTANCE hInstance)
 		int iWindowWidth = ::MulDiv(200, uiDpi, USER_DEFAULT_SCREEN_DPI);
 		int iWindowHeight = ::MulDiv(200, uiDpi, USER_DEFAULT_SCREEN_DPI);
 
-		m_hWnd = ::CreateWindowW(m_swzClassName, m_wstrWindowName.c_str(), WS_OVERLAPPEDWINDOW & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
+		m_hWnd = ::CreateWindowW(m_swzClassName, m_swzDefaultWindowName, WS_OVERLAPPEDWINDOW & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX & ~WS_THICKFRAME,
 			CW_USEDEFAULT, CW_USEDEFAULT, iWindowWidth, iWindowHeight, nullptr, nullptr, hInstance, this);
 		if (m_hWnd != nullptr)
 		{
@@ -329,9 +329,6 @@ LRESULT CMainWindow::OnCommand(WPARAM wParam, LPARAM lParam)
 		case Menu::kOpenFile:
 			MenuOnOpenFile();
 			break;
-		case Menu::kAudioLoop:
-			MenuOnAudioLoop();
-			break;
 		case Menu::kAudioSetting:
 			MenuOnAudioSetting();
 			break;
@@ -479,8 +476,6 @@ void CMainWindow::InitialiseMenuBar()
 	hMenuAudio = ::CreateMenu();
 	if (hMenuAudio == nullptr)goto failed;
 
-	iRet = ::AppendMenuA(hMenuAudio, MF_STRING, Menu::kAudioLoop, "Loop");
-	if (iRet == 0)goto failed;
 	iRet = ::AppendMenuA(hMenuAudio, MF_STRING, Menu::kAudioSetting, "Setting");
 	if (iRet == 0)goto failed;
 
@@ -558,23 +553,6 @@ void CMainWindow::MenuOnForeFile()
 
 	SetupScenario(m_scriptFilePaths.at(m_nScriptFilePathIndex).c_str());
 }
-/*音声ループ設定変更*/
-void CMainWindow::MenuOnAudioLoop()
-{
-	if (m_pAudioPlayer != nullptr)
-	{
-		HMENU hMenuBar = ::GetMenu(m_hWnd);
-		if (hMenuBar != nullptr)
-		{
-			HMENU hMenu = ::GetSubMenu(hMenuBar, MenuBar::kAudio);
-			if (hMenu != nullptr)
-			{
-				BOOL iRet = m_pAudioPlayer->SwitchLoop();
-				::CheckMenuItem(hMenu, Menu::kAudioLoop, iRet == TRUE ? MF_CHECKED : MF_UNCHECKED);
-			}
-		}
-	}
-}
 /*音声設定画面呼び出し*/
 void CMainWindow::MenuOnAudioSetting()
 {
@@ -600,7 +578,7 @@ void CMainWindow::ChangeWindowTitle(const wchar_t* pzTitle)
 		wstr = pos == std::wstring::npos ? wstrTitle : wstrTitle.substr(pos + 1);
 	}
 
-	::SetWindowTextW(m_hWnd, wstr.empty() ? m_wstrWindowName.c_str() : wstr.c_str());
+	::SetWindowTextW(m_hWnd, wstr.empty() ? m_swzDefaultWindowName : wstr.c_str());
 }
 /*表示形式変更*/
 void CMainWindow::SwitchWindowMode()

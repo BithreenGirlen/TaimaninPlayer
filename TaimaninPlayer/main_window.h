@@ -24,7 +24,7 @@ public:
 	HWND GetHwnd()const { return m_hWnd;}
 private:
 	const wchar_t* m_swzClassName = L"Taimanin player window";
-	std::wstring m_wstrWindowName = L"Taimanin player";
+	const wchar_t* m_swzDefaultWindowName = L"Taimanin player";
 	HINSTANCE m_hInstance = nullptr;
 	HWND m_hWnd = nullptr;
 
@@ -47,7 +47,7 @@ private:
 	enum Menu
 	{
 		kOpenFile = 1, 
-		kAudioLoop, kAudioSetting,
+		kAudioSetting,
 	};
 	enum MenuBar
 	{
@@ -79,7 +79,6 @@ private:
 	void MenuOnNextFile();
 	void MenuOnForeFile();
 
-	void MenuOnAudioLoop();
 	void MenuOnAudioSetting();
 
 	void ChangeWindowTitle(const wchar_t* pzTitle);
