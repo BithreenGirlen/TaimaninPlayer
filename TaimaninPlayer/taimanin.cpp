@@ -135,9 +135,17 @@ void taimanin::CreateScriptFilePathList(const std::wstring& wstrFilePath, std::v
 
 	std::vector<std::wstring> folders;
 	win_filesystem::CreateFilePathList(wstrParent.c_str(), nullptr, folders);
+
+	folders.erase(std::remove_if(folders.begin(), folders.end(),
+		[](const std::wstring& wstr)
+		-> bool
+		{
+			return wstr.find(L"chr_0001_1_p_r18") != std::wstring::npos ||
+				wstr.find(L"es019_s01a") != std::wstring::npos;
+		}), folders.end());
+
 	for (const auto& folder : folders)
 	{
-		if (folder.find(L"chr_0001_1_p_r18") != std::wstring::npos)continue;
 		win_filesystem::CreateFilePathList(folder.c_str(), L".txt", filePaths);
 	}
 }
