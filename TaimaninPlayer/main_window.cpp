@@ -131,6 +131,8 @@ LRESULT CMainWindow::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		return OnPaint();
 	case WM_ERASEBKGND:
 		return 1;
+	case WM_KEYDOWN:
+		return OnKeyDown(wParam, lParam);
 	case WM_KEYUP:
 		return OnKeyUp(wParam, lParam);
 	case WM_COMMAND:
@@ -267,6 +269,24 @@ LRESULT CMainWindow::OnSize()
 
 	return 0;
 }
+/*WM_KEYDOWN*/
+LRESULT CMainWindow::OnKeyDown(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case VK_RIGHT:
+		AutoTexting();
+		break;
+	case VK_LEFT:
+		ShiftText(false);
+		break;
+	default:
+
+		break;
+	}
+
+	return 0;
+}
 /*WM_KEYUP*/
 LRESULT CMainWindow::OnKeyUp(WPARAM wParam, LPARAM lParam)
 {
@@ -293,6 +313,7 @@ LRESULT CMainWindow::OnKeyUp(WPARAM wParam, LPARAM lParam)
 		UpdateScreen();
 		break;
 	}
+
 	return 0;
 }
 /*WM_COMMAND*/
