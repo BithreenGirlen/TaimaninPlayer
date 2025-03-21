@@ -47,11 +47,11 @@ private:
 	enum Menu
 	{
 		kOpenFile = 1, 
-		kAudioSetting,
+		kAudioSetting, kFontSetting
 	};
 	enum MenuBar
 	{
-		kFolder, kAudio
+		kFile, kSetting
 	};
 	enum EventMessage
 	{
@@ -80,6 +80,7 @@ private:
 	void MenuOnForeFile();
 
 	void MenuOnAudioSetting();
+	void MenuOnFontSetting();
 
 	void ChangeWindowTitle(const wchar_t* pzTitle);
 	void SwitchWindowMode();

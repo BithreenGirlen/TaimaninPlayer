@@ -3,21 +3,25 @@
 
 #include <Windows.h>
 
+#include "dialogue_controls.h"
+
 class CMediaSettingDialogue
 {
 public:
 	CMediaSettingDialogue();
 	~CMediaSettingDialogue();
+
 	bool Open(HINSTANCE hInstance, HWND hWnd, void* pMediaPlayer, const wchar_t* pwzWindowName);
-	int MessageLoop();
+
 	HWND GetHwnd()const { return m_hWnd; }
 private:
 	const wchar_t* m_swzClassName = L"Media player setting dialogue";
 	HINSTANCE m_hInstance = nullptr;
 	HWND m_hWnd = nullptr;
-	HWND m_hParentWnd = nullptr;
+
 	void* m_pMediaPlayer = nullptr;
 
+	int MessageLoop();
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnCreate(HWND hWnd);
@@ -25,16 +29,19 @@ private:
 	LRESULT OnClose();
 	LRESULT OnPaint();
 	LRESULT OnSize();
-	LRESULT OnVScroll(WPARAM wParam, LPARAM lParam);
+	LRESULT OnNotify(WPARAM wParam, LPARAM lParam);
 	LRESULT OnCommand(WPARAM wParam, LPARAM lParam);
+	LRESULT OnVScroll(WPARAM wParam, LPARAM lParam);
 
 	enum Constants { kFontSize = 16, kTextWidth = 70};
 	enum Controls{kVolumeSlider = 1, kRateSkuder};
 	HFONT m_hFont = nullptr;
-	HWND m_hVolumeSlider = nullptr;
-	HWND m_hVolumeText = nullptr;
-	HWND m_hRateSlider = nullptr;
-	HWND m_hRateText = nullptr;
+
+	CSlider m_volumeIntSlider;
+	CStatic m_volumeStatic;
+
+	CFloatSlider m_rateFloatSlider;
+	CStatic m_rateStatic;
 
 	void CreateSliders();
 	void SetSliderPosition();

@@ -139,9 +139,14 @@ namespace text_utility
 		nPos = nPos == std::basic_string<CharType>::npos ? 0 : nPos + 1;
 
 		size_t nPos2 = filePath.find(CharType('.'), nPos);
-		if (nPos2 == std::basic_string<CharType>::npos)nPos2 = filePath.size() - 1;
+		if (nPos2 == std::basic_string<CharType>::npos)nPos2 = filePath.size();
 
 		return filePath.substr(nPos, nPos2 - nPos);
+	}
+	template <typename CharType>
+	std::basic_string<CharType> ExtractFileName(const CharType* filePath)
+	{
+		return ExtractFileName(std::basic_string<CharType>(filePath));
 	}
 
 	template <typename CharType>
@@ -168,7 +173,7 @@ namespace text_utility
 			return filePath.substr(nPos);
 		}
 
-		return std::basic_string<CharType>;
+		return std::basic_string<CharType>();
 	}
 
 } /* namespace text_utility */

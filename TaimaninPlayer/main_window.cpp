@@ -8,6 +8,7 @@
 #include "win_dialogue.h"
 #include "win_text.h"
 #include "media_setting_dialogue.h"
+#include "font_setting_dialogue.h"
 #include "taimanin.h"
 
 
@@ -332,6 +333,9 @@ LRESULT CMainWindow::OnCommand(WPARAM wParam, LPARAM lParam)
 		case Menu::kAudioSetting:
 			MenuOnAudioSetting();
 			break;
+		case Menu::kFontSetting:
+			MenuOnFontSetting();
+			break;
 		default:
 
 			break;
@@ -460,7 +464,7 @@ LRESULT CMainWindow::OnMButtonUp(WPARAM wParam, LPARAM lParam)
 void CMainWindow::InitialiseMenuBar()
 {
 	HMENU hMenuFile = nullptr;
-	HMENU hMenuAudio = nullptr;
+	HMENU hMenuSetting = nullptr;
 	HMENU hMenuBar = nullptr;
 	BOOL iRet = FALSE;
 
@@ -473,10 +477,12 @@ void CMainWindow::InitialiseMenuBar()
 	if (iRet == 0)goto failed;
 
 	/*音声*/
-	hMenuAudio = ::CreateMenu();
-	if (hMenuAudio == nullptr)goto failed;
+	hMenuSetting = ::CreateMenu();
+	if (hMenuSetting == nullptr)goto failed;
 
-	iRet = ::AppendMenuA(hMenuAudio, MF_STRING, Menu::kAudioSetting, "Setting");
+	iRet = ::AppendMenuA(hMenuSetting, MF_STRING, Menu::kAudioSetting, "Audio");
+	if (iRet == 0)goto failed;
+	iRet = ::AppendMenuA(hMenuSetting, MF_STRING, Menu::kFontSetting, "Font");
 	if (iRet == 0)goto failed;
 
 	/*分類*/
@@ -484,7 +490,7 @@ void CMainWindow::InitialiseMenuBar()
 	if (hMenuBar == nullptr) goto failed;
 	iRet = ::AppendMenuA(hMenuBar, MF_POPUP, reinterpret_cast<UINT_PTR>(hMenuFile), "File");
 	if (iRet == 0)goto failed;
-	iRet = ::AppendMenuA(hMenuBar, MF_POPUP, reinterpret_cast<UINT_PTR>(hMenuAudio), "Audio");
+	iRet = ::AppendMenuA(hMenuBar, MF_POPUP, reinterpret_cast<UINT_PTR>(hMenuSetting), "Setting");
 	if (iRet == 0)goto failed;
 
 	iRet = ::SetMenu(m_hWnd, hMenuBar);
@@ -503,9 +509,9 @@ failed:
 	{
 		::DestroyMenu(hMenuFile);
 	}
-	if (hMenuAudio != nullptr)
+	if (hMenuSetting != nullptr)
 	{
-		::DestroyMenu(hMenuAudio);
+		::DestroyMenu(hMenuSetting);
 	}
 	if (hMenuBar != nullptr)
 	{
@@ -564,6 +570,26 @@ void CMainWindow::MenuOnAudioSetting()
 			pMediaSettingDialogue->Open(m_hInstance, m_hWnd, m_pAudioPlayer, L"Audio");
 
 			delete pMediaSettingDialogue;
+		}
+	}
+}
+/*書体設定*/
+void CMainWindow::MenuOnFontSetting()
+{
+	CFontSettingDialogue sFontSettingDialogue;
+	INT_PTR iRet = sFontSettingDialogue.Open(m_hInstance, m_hWnd, L"Font", m_pD2TextWriter);
+	if (sFontSettingDialogue.HasFontBeenChanged())
+	{
+		if (m_pD2TextWriter != nullptr)
+		{
+			const CFontSettingDialogue::SFontDatum& s = sFontSettingDialogue.GetFontDatum();
+
+			bool bRet = m_pD2TextWriter->SetFontByFontName(s.wstrFontFamilyName.c_str(), s.wstrLocaleName.c_str(), s.bBold, s.bItalic);
+			bRet &= m_pD2TextWriter->SetupOutLinedDrawing(s.wstrFontFilePath.c_str(), s.fFontSize, s.fThickness);
+			if (bRet)
+			{
+				UpdateScreen();
+			}
 		}
 	}
 }
