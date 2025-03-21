@@ -18,6 +18,7 @@ public:
 	~CTaimaninSceneCrafter();
 
 	bool LoadScenario(const wchar_t* pwzScenarioFilePath);
+
 	void GetImageSize(unsigned int* uiWidth, unsigned int* uiHeight);
 
 	void ShiftScene(bool bForward);
@@ -38,6 +39,6 @@ private:
 	std::vector<std::vector<ID2D1Bitmap*>> m_imagesList;
 
 	void ClearScenarioData();
-	ID2D1Bitmap* ImportWholeImage(const std::wstring& wstrImageFilePath);
+	ID2D1Bitmap* ImportImage(const std::wstring& wstrImageFilePath, unsigned int uiCroppedWidth = 0);
 };
 #endif // !TAIMANIN_SCENE_CRAFTER_H_

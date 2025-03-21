@@ -252,9 +252,8 @@ LRESULT CMainWindow::OnPaint()
 		if (!m_bTextHidden)
 		{
 			std::wstring wstr = m_pTaimaninSceneCrafter->GetCurrentFormattedText();
-			constexpr float kfOffsetX = 170.f;
 
-			m_pD2TextWriter->OutLinedDraw(wstr.c_str(), static_cast<unsigned long>(wstr.size()), { kfOffsetX * m_pViewManager->GetScale() });
+			m_pD2TextWriter->OutLinedDraw(wstr.c_str(), static_cast<unsigned long>(wstr.size()));
 		}
 
 		m_pD2ImageDrawer->Display();

@@ -34,7 +34,8 @@ bool CTaimaninSceneCrafter::LoadScenario(const wchar_t* pwzScenarioFilePath)
 			const auto& iter = m_imageMap.find(imageFilePath);
 			if (iter == m_imageMap.cend())
 			{
-				pD2D1Bitmap = ImportWholeImage(imageFilePath);
+				const unsigned int uiCroppedWidth = 320;
+				pD2D1Bitmap = ImportImage(imageFilePath, uiCroppedWidth);
 			}
 			else
 			{
@@ -153,7 +154,7 @@ void CTaimaninSceneCrafter::ClearScenarioData()
 	m_imageMap.clear();
 }
 /*画像取り込み*/
-ID2D1Bitmap* CTaimaninSceneCrafter::ImportWholeImage(const std::wstring& wstrImageFilePath)
+ID2D1Bitmap* CTaimaninSceneCrafter::ImportImage(const std::wstring& wstrImageFilePath, unsigned int uiCroppedWidth)
 {
 	ID2D1Bitmap* p = nullptr;
 
@@ -163,13 +164,21 @@ ID2D1Bitmap* CTaimaninSceneCrafter::ImportWholeImage(const std::wstring& wstrIma
 	{
 		CComPtr<ID2D1Bitmap> pD2d1Bitmap;
 
+		unsigned int uiWidth = sImageFrame.uiWidth;
+		const void* pPixel = sImageFrame.pixels.data();
+		if (uiCroppedWidth != 0 && sImageFrame.uiWidth > uiCroppedWidth)
+		{
+			uiWidth = sImageFrame.uiWidth - uiCroppedWidth;
+			pPixel = sImageFrame.pixels.data() + uiCroppedWidth / 2 * (sImageFrame.iStride / sImageFrame.uiWidth);
+		}
+
 		HRESULT hr = m_pStoredD2d1DeviceContext->CreateBitmap(
-			D2D1::SizeU(sImageFrame.uiWidth, sImageFrame.uiHeight),
+			D2D1::SizeU(uiWidth, sImageFrame.uiHeight),
 			D2D1::BitmapProperties(D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE)),
 			&pD2d1Bitmap);
 
-		D2D1_RECT_U rc = { 0, 0, sImageFrame.uiWidth, sImageFrame.uiHeight };
-		hr = pD2d1Bitmap->CopyFromMemory(&rc, sImageFrame.pixels.data(), sImageFrame.iStride);
+		D2D1_RECT_U rc = { 0, 0, uiWidth, sImageFrame.uiHeight };
+		hr = pD2d1Bitmap->CopyFromMemory(&rc, pPixel, sImageFrame.iStride);
 		if (SUCCEEDED(hr))
 		{
 			m_imageMap.insert({ wstrImageFilePath, pD2d1Bitmap });
