@@ -78,8 +78,6 @@ private:
 	void ResizeControls();
 
 	void OnApplyButton();
-	void OnBoldCheckButton();
-	void OnOtalicCheckButton();
 
 	void SetSliderPosition();
 

@@ -58,7 +58,7 @@ bool CD2TextWriter::SetFontByFontName(const wchar_t* pwzFontFamilyName, const wc
 	return SUCCEEDED(hr);
 }
 /*縁有り描画事前設定*/
-bool CD2TextWriter::SetupOutLinedDrawing(const wchar_t* pwzFontFilePath, float fFontSize, float fStrokeThickness)
+bool CD2TextWriter::SetupOutLinedDrawing(const wchar_t* pwzFontFilePath, bool bSimulateBold, bool bSimulateItalic, float fFontSize, float fStrokeThickness)
 {
 	if (m_pStoredD2d1DeviceContext == nullptr)return false;
 
@@ -74,8 +74,12 @@ bool CD2TextWriter::SetupOutLinedDrawing(const wchar_t* pwzFontFilePath, float f
 	UINT32 uiFaceCount = 0;
 	hr = pDWriteFontFile->Analyze(&iSupported, &fontType, &fontFace, &uiFaceCount);
 
+	DWRITE_FONT_SIMULATIONS fontSimulatioms = DWRITE_FONT_SIMULATIONS::DWRITE_FONT_SIMULATIONS_NONE;
+	if (bSimulateBold)fontSimulatioms |= DWRITE_FONT_SIMULATIONS::DWRITE_FONT_SIMULATIONS_BOLD;
+	if (bSimulateItalic)fontSimulatioms |= DWRITE_FONT_SIMULATIONS::DWRITE_FONT_SIMULATIONS_OBLIQUE;
+
 	IDWriteFontFile* pDWriteFontFiles[] = { pDWriteFontFile };
-	hr = m_pDWriteFactory->CreateFontFace(fontFace, 1U, pDWriteFontFiles, 0, DWRITE_FONT_SIMULATIONS_BOLD | DWRITE_FONT_SIMULATIONS_OBLIQUE, &m_pDWriteFontFace);
+	hr = m_pDWriteFactory->CreateFontFace(fontFace, 1U, pDWriteFontFiles, 0, fontSimulatioms, &m_pDWriteFontFace);
 	if (SUCCEEDED(hr))
 	{
 		m_fFontSize = fFontSize;
@@ -120,9 +124,7 @@ void CD2TextWriter::LayedOutDraw(const wchar_t* wszText, unsigned long ulTextLen
 /*縁有り描画*/
 void CD2TextWriter::OutLinedDraw(const wchar_t* wszText, unsigned long ulTextLength, const D2D1_RECT_F& rect)
 {
-	if (m_pStoredD2d1DeviceContext == nullptr
-		|| m_pD2d1SolidColorBrush == nullptr || m_pD2dSolidColorBrushForOutline == nullptr
-		|| m_pDWriteFontFace == nullptr)
+	if (m_pStoredD2d1DeviceContext == nullptr || m_pD2d1SolidColorBrush == nullptr || m_pD2dSolidColorBrushForOutline == nullptr || m_pDWriteFontFace == nullptr)
 	{
 		return;
 	}
@@ -184,7 +186,12 @@ void CD2TextWriter::OutLinedDraw(const wchar_t* wszText, unsigned long ulTextLen
 
 bool CD2TextWriter::HasBoldStyle() const
 {
-	if (m_pDWriteTextFormat != nullptr)
+	if (m_pDWriteFontFace != nullptr)
+	{
+		DWRITE_FONT_SIMULATIONS fontSimulatioms = m_pDWriteFontFace->GetSimulations();
+		return fontSimulatioms & DWRITE_FONT_SIMULATIONS::DWRITE_FONT_SIMULATIONS_BOLD;
+	}
+	else if (m_pDWriteTextFormat != nullptr)
 	{
 		DWRITE_FONT_WEIGHT eFontWeight = m_pDWriteTextFormat->GetFontWeight();
 		return eFontWeight >= DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_BOLD;
@@ -195,7 +202,12 @@ bool CD2TextWriter::HasBoldStyle() const
 
 bool CD2TextWriter::HasItalicStyle() const
 {
-	if (m_pDWriteTextFormat != nullptr)
+	if (m_pDWriteFontFace != nullptr)
+	{
+		DWRITE_FONT_SIMULATIONS fontSimulatioms = m_pDWriteFontFace->GetSimulations();
+		return fontSimulatioms & DWRITE_FONT_SIMULATIONS::DWRITE_FONT_SIMULATIONS_OBLIQUE;
+	}
+	else if (m_pDWriteTextFormat != nullptr)
 	{
 		DWRITE_FONT_STYLE eFontStyle = m_pDWriteTextFormat->GetFontStyle();
 		return eFontStyle == DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_ITALIC;

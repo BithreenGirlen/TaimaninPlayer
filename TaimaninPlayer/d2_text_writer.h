@@ -14,7 +14,7 @@ public:
 	~CD2TextWriter();
 
 	bool SetFontByFontName(const wchar_t* pwzFontFamilyName, const wchar_t* pwzLocaleName = nullptr, bool bBold = true, bool bItalic = false, float fFontSize = kfDefaultFontSize);
-	bool SetupOutLinedDrawing(const wchar_t* pwzFontFilePath, float fFontSize = kfDefaultFontSize, float fStrokeThickness = kfDefaultStrokeThickness);
+	bool SetupOutLinedDrawing(const wchar_t* pwzFontFilePath, bool bSimulateBold = true, bool bSimulateItalic = true, float fFontSize = kfDefaultFontSize, float fStrokeThickness = kfDefaultStrokeThickness);
 
 	void NoBorderDraw(const wchar_t* wszText, unsigned long ulTextLength, const D2D1_RECT_F& rect = D2D1_RECT_F{});
 	void LayedOutDraw(const wchar_t* wszText, unsigned long ulTextLength, const D2D1_RECT_F& rect = D2D1_RECT_F{});

@@ -23,13 +23,11 @@ public:
 
 	}
 
-	/*地域名引き渡し*/
 	const wchar_t* const GetLocaleName() const
 	{
 		return m_swzLocaleName;
 	}
 
-	/*或る地域に於ける書体名を基に実行環境の書体名を探索*/
 	std::wstring FindLocaleFontName(const wchar_t* pwzFontFamilyName)
 	{
 		UINT uiFontFamilyIndex = 0;
@@ -60,7 +58,7 @@ public:
 
 		return wstrLocaleFontName;
 	}
-	/*搭載字体名一覧取得*/
+
 	std::vector <std::wstring> GetSystemFontFamilyNames()
 	{
 		std::vector<std::wstring> systemFontFamilyNames;
@@ -96,7 +94,7 @@ public:
 
 		return systemFontFamilyNames;
 	}
-	/*字体名称からファイル経路探索*/
+
 	std::vector<std::wstring> FindFontFilePaths(const wchar_t* pwzFontFamilyName, bool bBold, bool bItalic)
 	{
 		std::vector<std::wstring> fontFilePaths;

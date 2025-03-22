@@ -13,19 +13,22 @@ public:
 	/// <summary>
 	/// 実行環境の言語・地域名取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>言語・地域名への内部保有ポインタ</returns>
 	const wchar_t* const GetLocaleName();
+
 	/// <summary>
 	/// 或る地域に於ける書体名を基に実行環境の書体名探索
 	/// </summary>
 	/// <param name="pwzFontFamilyName">何処かしらかの地域の書体名</param>
 	/// <returns>実行環境の言語・文字で表される書体名</returns>
 	std::wstring FindLocaleFontName(const wchar_t* pwzFontFamilyName);
+
 	/// <summary>
 	/// 搭載書体名一覧取得
 	/// </summary>
 	/// <returns>実行環境の言語・文字で表される書体名一覧</returns>
 	std::vector<std::wstring> GetSystemFontFamilyNames();
+
 	/// <summary>
 	/// 搭載書体名からファイル経路探索
 	/// </summary>

@@ -584,7 +584,7 @@ void CMainWindow::MenuOnFontSetting()
 			const CFontSettingDialogue::SFontDatum& s = sFontSettingDialogue.GetFontDatum();
 
 			bool bRet = m_pD2TextWriter->SetFontByFontName(s.wstrFontFamilyName.c_str(), s.wstrLocaleName.c_str(), s.bBold, s.bItalic);
-			bRet &= m_pD2TextWriter->SetupOutLinedDrawing(s.wstrFontFilePath.c_str(), s.fFontSize, s.fThickness);
+			bRet &= m_pD2TextWriter->SetupOutLinedDrawing(s.wstrFontFilePath.c_str(), s.bBold, s.bItalic, s.fFontSize, s.fThickness);
 			if (bRet)
 			{
 				UpdateScreen();

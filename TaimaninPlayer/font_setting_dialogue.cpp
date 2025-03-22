@@ -82,7 +82,7 @@ LRESULT CFontSettingDialogue::OnInit(HWND hWnd)
 	m_fontSizeSlider.Create(L"", m_hWnd, reinterpret_cast<HMENU>(Controls::kFontSizeSlider), 8, 64, 1);
 
 	m_fontThicknessStatic.Create(L"Thickness", m_hWnd);
-	m_fontThicknessSlider.Create(L"", m_hWnd, reinterpret_cast<HMENU>(Controls::kFontThicknessSlider), 0.1f, 6.f, 0.1f);
+	m_fontThicknessSlider.Create(L"", m_hWnd, reinterpret_cast<HMENU>(Controls::kFontThicknessSlider), 0.f, 6.f, 0.1f);
 
 	m_boldCheckButton.Create(L"Bold", m_hWnd, reinterpret_cast<HMENU>(Controls::kBoldCheckButton), true);
 	m_italicCheckButton.Create(L"Italic", m_hWnd, reinterpret_cast<HMENU>(Controls::kItalicCheckButton), true);
@@ -97,11 +97,9 @@ LRESULT CFontSettingDialogue::OnInit(HWND hWnd)
 	if (m_pTextWriter != nullptr)
 	{
 		CD2TextWriter* pD2TextWriter = static_cast<CD2TextWriter*>(m_pTextWriter);
-		bool bBold = pD2TextWriter->HasBoldStyle();
-		bool bItalic = pD2TextWriter->HasItalicStyle();
 
-		m_boldCheckButton.SetCheckBox(bBold);
-		m_italicCheckButton.SetCheckBox(bItalic);
+		m_boldCheckButton.SetCheckBox(pD2TextWriter->HasBoldStyle());
+		m_italicCheckButton.SetCheckBox(pD2TextWriter->HasItalicStyle());
 
 		wchar_t sBuffer[LOCALE_NAME_MAX_LENGTH]{};
 		pD2TextWriter->GetFontFamilyName(sBuffer, sizeof(sBuffer) / sizeof(wchar_t));
@@ -193,10 +191,10 @@ LRESULT CFontSettingDialogue::OnCommand(WPARAM wParam, LPARAM lParam)
 				OnApplyButton();
 				break;
 			case Controls::kBoldCheckButton:
-				OnBoldCheckButton();
+				m_boldCheckButton.SetCheckBox(!m_boldCheckButton.IsChecked());
 				break;
 			case Controls::kItalicCheckButton:
-				OnOtalicCheckButton();
+				m_italicCheckButton.SetCheckBox(!m_italicCheckButton.IsChecked());
 				break;
 			default:
 				break;
@@ -288,6 +286,7 @@ void CFontSettingDialogue::OnApplyButton()
 
 		bool bBold = m_boldCheckButton.IsChecked();
 		bool bItalic = m_italicCheckButton.IsChecked();
+
 		auto filePaths = sWinFont.FindFontFilePaths(wstrFontName.c_str(), bBold, bItalic);
 		if (!filePaths.empty())
 		{
@@ -306,16 +305,6 @@ void CFontSettingDialogue::OnApplyButton()
 			::PostMessage(m_hWnd, WM_CLOSE, 0, 0);
 		}
 	}
-}
-
-void CFontSettingDialogue::OnBoldCheckButton()
-{
-	m_boldCheckButton.SetCheckBox(!m_boldCheckButton.IsChecked());
-}
-
-void CFontSettingDialogue::OnOtalicCheckButton()
-{
-	m_italicCheckButton.SetCheckBox(!m_italicCheckButton.IsChecked());
 }
 
 void CFontSettingDialogue::SetSliderPosition()
